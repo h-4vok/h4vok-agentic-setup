@@ -1,8 +1,8 @@
-# Verificación
+# Verification
 
-Separar los niveles de prueba. Un paquete instalado o `--version` exitoso no acredita una solicitud real contra el proveedor.
+Distinguish test levels. An installed package or successful `--version` check does not establish an actual provider request.
 
-## 1. Paquete, preferencias y MCP
+## 1. Package, preferences, and MCP
 
 ```powershell
 headroom --version
@@ -14,20 +14,20 @@ codex mcp get headroom
 headroom mcp status
 ```
 
-Esperado: Headroom 0.39.1 para la guía inicial, beacon `off`, shaper `1` y MCP registrado en ambos clientes con comando válido. Revisar el registro global de Claude sin volcar su configuración completa, que puede contener secretos.
+Expected: Headroom 0.39.1 for the initial guide, beacon `off`, shaper `1`, and MCP registered in both clients with a valid command. Inspect Claude's global registration without dumping its complete configuration, which may contain secrets.
 
-## 2. Arranque de los wrappers
+## 2. Wrapper startup
 
 ```powershell
 headroom wrap codex -- --version
 headroom wrap claude -- --version
 ```
 
-Esperado: arranque/reutilización del proxy, URL de routing y versiones de los clientes con código 0. El primer arranque puede tardar más. Si el proxy lo creó un wrapper, puede terminar al salir su último cliente; no asumir que sigue corriendo después de `--version`.
+Expected: proxy startup/reuse, routing URL, and client versions with exit code 0. The first startup may take longer. A wrapper-created proxy may stop when its last client exits; do not assume it remains running after `--version`.
 
-## 3. Proxy y dashboard
+## 3. Proxy and dashboard
 
-Mantener abierto un wrapper real o, para diagnóstico, una terminal con:
+Keep a real wrapper session open or, for diagnostics, use a terminal running:
 
 ```powershell
 $env:HEADROOM_BEACON = 'off'
@@ -35,7 +35,7 @@ $env:HEADROOM_OUTPUT_SHAPER = '1'
 headroom proxy --host 127.0.0.1 --port 8787
 ```
 
-En otra terminal:
+In another terminal:
 
 ```powershell
 headroom doctor --json
@@ -48,13 +48,13 @@ $health.ready
 $health.config.runtime_env.HEADROOM_OUTPUT_SHAPER
 ```
 
-Esperado: HTTP 200, `healthy`, `ready=True`, shaping `1`. `doctor` distingue código **0** (todo saludable), **1** (advertencias) y **2** (fallo). Leer los checks: puede avisar que la configuración global no tiene routing aunque el wrapper lo haya configurado sólo para su proceso. No alterar el proveedor global para hacer desaparecer esa advertencia.
+Expected: HTTP 200, `healthy`, `ready=True`, and shaping `1`. `doctor` distinguishes exit codes **0** (all healthy), **1** (warnings), and **2** (failure). Read individual checks: it may warn about missing global routing even though a wrapper configured routing only for its process. Do not change the global provider to hide that warning.
 
-`kompress` puede estar `deferred` antes de necesitar el modelo ML; el compresor estructural y otros componentes tienen estados separados. Consultar `/debug/warmup` y la explicación en troubleshooting.
+`kompress` may be `deferred` before the ML model is needed; the structural compressor and other components have separate states. Consult `/debug/warmup` and the troubleshooting explanation.
 
-## 4. Compresión y recuperación MCP local
+## 4. Local MCP compression and retrieval
 
-Desde la raíz, con el Python del entorno instalado:
+From the repository root, using Python from the installed environment:
 
 ```powershell
 $toolDir = (uv tool dir | Out-String).Trim()
@@ -63,30 +63,30 @@ $env:PATH = "$binDir;$env:PATH"
 & (Join-Path $toolDir 'headroom-ai\Scripts\python.exe') .\ai-tools\headroom\scripts\verify-mcp.py
 ```
 
-El script abre el servidor MCP por stdio, verifica sus herramientas, comprime JSON sintético y recupera exactamente el original en la misma sesión. Falla si faltan herramientas, hay errores, no reduce el fixture o no recupera el contenido. No usa credenciales ni llama a un modelo remoto. Puede guardar contadores locales de esa prueba en Headroom; no confundirlos con actividad de proyectos reales.
+The script opens the MCP server over stdio, verifies tools, compresses synthetic JSON, and retrieves the exact original within the same session. It fails on missing tools, errors, no fixture reduction, or a retrieval mismatch. It uses no credentials and calls no remote model. It may store local counters for this test in Headroom; do not confuse them with real project activity.
 
-Esperado: `result: PASS`, `retrieval_exact: true`, menos tokens comprimidos que originales. El porcentaje es del fixture, no una promesa de ahorro en el trabajo diario.
+Expected: `result: PASS`, `retrieval_exact: true`, and fewer compressed than original tokens. The percentage applies to the fixture; it is not a promise of daily savings.
 
-## 5. Solicitudes reales
+## 5. Real requests
 
-Con clientes autenticados:
+With authenticated clients:
 
 ```powershell
 headroom wrap codex -- exec --ephemeral --skip-git-repo-check 'Respond exactly HEADROOM_OK. Do not use tools or modify files.'
 headroom wrap claude -- -p 'Respond exactly HEADROOM_OK. Do not use tools or modify files.'
 ```
 
-Cada comando consume uso del proveedor. Esperado: `HEADROOM_OK`, código 0 y actividad en `headroom perf` o `/stats` mientras el proxy esté activo. Si falta login, registrar la prueba como pendiente. No iniciar un login no interactivo usando credenciales copiadas de otro cliente.
+Each command consumes provider usage. Expected: `HEADROOM_OK`, exit code 0, and activity in `headroom perf` or `/stats` while the proxy runs. If login is missing, record the test as pending. Do not attempt noninteractive login with credentials copied from another client.
 
-## 6. Savings y sincronización del trimming
+## 6. Savings and trimming synchronization
 
 ```powershell
 headroom perf
 headroom output-savings
 ```
 
-Registrar por separado ahorro de entrada, caché y salida. Si el reporte de salida no tiene muestras, registrar «sin datos».
+Record input, cache, and output savings separately. If the output report has no samples, record "no data".
 
-Con el proxy compartido abierto, probar shaper `0` seguido de `headroom wrap codex -- --version`, consultar el valor en `/health`, luego restaurar `1` con `headroom wrap claude -- --version` y volver a consultarlo. Esto prueba la sincronización sin reiniciar el proxy ni gastar solicitudes de modelo.
+With the shared proxy open, set shaping to `0`, run `headroom wrap codex -- --version`, and check `/health`. Then restore `1` with `headroom wrap claude -- --version` and check again. This tests synchronization without restarting the proxy or consuming model requests.
 
-Al terminar diagnósticos, detener con Ctrl+C el proxy que se inició manualmente. No detener procesos ajenos ni dejar servicios de prueba corriendo innecesariamente. Guardar fecha, versiones, resultados y pendientes en `validation/`, sin datos sensibles.
+After diagnostics, stop the manually started proxy with Ctrl+C. Do not stop unrelated processes or leave test services running unnecessarily. Save dates, versions, results, and pending checks in `validation/`, without sensitive data.

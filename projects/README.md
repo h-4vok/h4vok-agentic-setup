@@ -1,3 +1,3 @@
-# Proyectos propios
+# Personal projects
 
-Pendiente: referencias e instrucciones de instalación de sloop, llmchat-cli y diagram-tours. Se agregarán las URLs y los requisitos verificados de cada proyecto antes de ofrecer comandos de instalación.
+Planned: references and installation instructions for sloop, llmchat-cli, and diagram-tours. Verified URLs and requirements will be added for each project before providing installation commands.

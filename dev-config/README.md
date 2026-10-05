@@ -1,3 +1,3 @@
-# Configuraciones de desarrollo
+# Development configuration
 
-Pendiente: preferencias compartidas de EditorConfig, Prettier y VS Code. Cada configuración tendrá su propia carpeta con instrucciones de aplicación y reversión. Todavía no hay archivos para instalar.
+Planned: shared preferences for EditorConfig, Prettier, and VS Code. Each configuration will have its own directory with application and rollback instructions. There are no configurations to install yet.

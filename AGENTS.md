@@ -1,28 +1,34 @@
-# Cómo trabajar con este repositorio
+# Working with this repository
 
-## Objetivo
+## Purpose
 
-Este repositorio documenta e instala el setup local opinionado del propietario. Debe poder seguirlo un humano o una IA sin depender de conversaciones anteriores. El README raíz es un índice; los procedimientos viven en la carpeta de cada componente.
+This repository documents and installs the owner's opinionated local setup. Humans and AI agents must be able to follow it without relying on previous conversations. The root README is a table of contents; procedures belong in each component's directory.
 
-## Instalar en una máquina
+## Required working language
 
-1. Leer el README raíz y la guía del componente solicitado, incluidos los pasos específicos del sistema operativo y del cliente (Codex/Claude).
-2. Detectar sistema, shell, comandos, versiones y configuración existente antes de modificar nada. No asumir que una instalación anterior aplica a otra PC.
-3. Instalar sólo el alcance solicitado. Reutilizar dependencias compatibles; no reinstalar o actualizar otras herramientas porque sí.
-4. Guardar copias locales de los archivos que se modificarán, fuera del repositorio. Combinar cambios con la configuración existente; nunca reemplazarla completa ni mostrar secretos en logs.
-5. Aplicar las preferencias explícitas de cada guía. Para Headroom: beacon apagado y output shaping activado; proxy en loopback.
-6. Ejecutar la verificación de la guía y revisar los códigos de salida. Separar instalación, configuración, arranque, pruebas locales y pruebas reales contra el proveedor.
-7. Corregir problemas dentro del alcance autorizado. Documentar pasos extras, causas y soluciones reproducibles en troubleshooting y registrar resultados con fecha y versiones.
-8. Informar qué quedó funcionando, qué requiere una nueva terminal/reinicio del cliente y qué falta verificar. No declarar ahorro medido sin datos ni llamar end-to-end a una prueba que sólo usa --version.
+**Use English for all work in this repository, regardless of the language used in conversations with the owner.** A Spanish chat does not change this requirement.
 
-## Mantener las guías
+Write documentation, agent instructions, code comments, docstrings, script messages, examples, validation records, and any requested commit or PR text in English. Preserve exact commands, identifiers, paths, and verbatim diagnostic output when translation would change their meaning. User-facing chat replies may follow the owner's conversational language.
 
-- Escribir en español, con comandos completos y bloques marcados por lenguaje.
-- Una carpeta por componente dentro de su categoría. Evitar duplicar requisitos comunes entre guías de clientes.
-- Incluir propósito, requisitos, preferencias, instalación, uso diario, verificación, actualización y reversión.
-- Marcar opciones como opcionales. No aplicarlas automáticamente durante una instalación básica.
-- Verificar los comandos contra --help y fuentes oficiales actuales. Registrar la versión probada y enlazar las fuentes; los procedimientos pueden cambiar.
-- Si se incluyen scripts, deben fallar claramente, conservar configuraciones ajenas y tolerar una segunda ejecución.
-- No versionar credenciales, configuraciones personales completas, historiales de agentes, backups, logs privados o binarios descargados.
-- No hacer commits, publicar ni enviar mensajes a terceros salvo que el usuario lo solicite.
-- Las carpetas pendientes no autorizan instalar su contenido.
+## Installing on a machine
+
+1. Read the root README and the requested component guide, including operating system and client-specific steps (Codex/Claude).
+2. Detect the system, shell, commands, versions, and existing configuration before making changes. Do not assume a previous installation applies to another PC.
+3. Install only the requested scope. Reuse compatible dependencies; do not reinstall or upgrade unrelated tools without a reason.
+4. Save local backups of files that will change, outside the repository. Merge changes into existing configuration; never replace it wholesale or expose secrets in logs.
+5. Apply each guide's explicit preferences. For Headroom: beacon off, output shaping on, and a loopback proxy.
+6. Run the guide's verification steps and inspect exit codes. Distinguish installation, configuration, startup, local tests, and actual provider requests.
+7. Fix issues within the authorized scope. Document extra steps, causes, and reproducible solutions in troubleshooting, and record results with dates and versions.
+8. Report what works, what requires a new terminal or client restart, and what remains unverified. Do not claim measured savings without data or call a --version check an end-to-end test.
+
+## Maintaining guides
+
+- Use English, complete commands, and language-tagged code blocks.
+- Keep one directory per component within its category. Avoid duplicating shared requirements across client guides.
+- Include purpose, requirements, preferences, installation, daily usage, verification, updates, and rollback.
+- Mark optional steps explicitly. Do not apply them automatically during a basic installation.
+- Check commands against --help and current official sources. Record the tested version and link sources; procedures can change.
+- Scripts must fail clearly, preserve unrelated configuration, and tolerate repeated execution.
+- Do not commit credentials, complete personal configurations, agent histories, backups, private logs, or downloaded binaries.
+- Do not commit, publish, or message third parties unless the user requests it.
+- Planned directories do not authorize installing their contents.

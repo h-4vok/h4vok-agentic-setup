@@ -1,39 +1,39 @@
 # Headroom
 
-Proxy local y herramientas MCP para reducir contexto enviado a los modelos. Se instala una vez por PC; Codex CLI y Claude Code pueden usar el mismo proxy. El output shaping también ajusta la verbosidad de las respuestas.
+A local proxy and MCP tools to reduce context sent to models. Install it once per PC; Codex CLI and Claude Code can share the proxy. Output shaping also adjusts response verbosity.
 
-## Índice y orden de instalación
+## Contents and installation order
 
-1. [Instalación común en Windows](windows.md): requisitos, preferencias y registro MCP.
-2. [Claude Code](claude.md): autenticación y sesiones con proxy.
-3. [Codex](codex.md): CLI con proxy y MCP para CLI/app.
-4. [Trimming de salida](output-trimming.md): activar, medir, aprender y desactivar.
-5. [Verificación](verification.md): salud, prueba MCP y solicitudes reales.
-6. [Problemas y soluciones](troubleshooting.md): diferencias de Windows y documentación desactualizada.
-7. [Registro de esta PC](validation/2026-10-05-windows.md): evidencia y límites de la instalación inicial.
+1. [Shared Windows installation](windows.md): requirements, preferences, and MCP registration.
+2. [Claude Code](claude.md): authentication and proxy sessions.
+3. [Codex](codex.md): CLI proxy and MCP for the CLI/app.
+4. [Output trimming](output-trimming.md): enable, measure, learn, and disable.
+5. [Verification](verification.md): health, MCP tests, and real requests.
+6. [Troubleshooting](troubleshooting.md): Windows differences and outdated documentation.
+7. [This PC's validation record](validation/2026-10-05-windows.md): evidence and limits of the initial installation.
 
-## Preferencias de este setup
+## Setup preferences
 
-| Decisión | Valor |
+| Decision | Value |
 | --- | --- |
-| Instalación | `uv tool`, Python 3.13, `headroom-ai[all]` |
-| Versión reproducible inicial | `0.39.1` |
-| Beacon | `HEADROOM_BEACON=off`, persistente a nivel usuario |
-| Output shaping | `HEADROOM_OUTPUT_SHAPER=1`, persistente a nivel usuario |
-| Proxy | Loopback `127.0.0.1:8787`; sesión iniciada con `wrap` |
-| Serena | Predeterminado de `wrap`, configurable por proyecto/cliente |
-| Aprendizaje y holdout | Opcionales; no se aplican al instalar |
+| Installation | `uv tool`, Python 3.13, `headroom-ai[all]` |
+| Initial reproducible version | `0.39.1` |
+| Beacon | `HEADROOM_BEACON=off`, persisted for the user |
+| Output shaping | `HEADROOM_OUTPUT_SHAPER=1`, persisted for the user |
+| Proxy | Loopback `127.0.0.1:8787`; launch sessions with `wrap` |
+| Serena | `wrap` default, configurable per project/client |
+| Learning and holdout | Optional; not applied during installation |
 
-Los wrappers son para las CLI. Registrar MCP en la app Codex permite que el modelo use sus herramientas; no convierte todas las conversaciones de la app en tráfico del proxy. Tampoco el MCP solo activa el output shaping.
+Wrappers target the CLIs. Registering MCP in the Codex app lets the model use its tools; it does not route every app conversation through the proxy. MCP alone does not activate output shaping either.
 
-No se instalan servicios de inicio automático ni se reemplazan modelos, credenciales o configuraciones completas de los clientes. Una terminal/app ya abierta necesita reiniciarse para heredar variables persistentes.
+This setup does not install startup services or replace models, credentials, or complete client configurations. Restart an already open terminal/app to inherit persistent variables.
 
-## Fuentes y vigencia
+## Sources and currency
 
-Guía contrastada el **5 de octubre de 2026** con el paquete instalado 0.39.1, su `--help` y las fuentes oficiales:
+Checked on **5 October 2026** against the installed 0.39.1 package, its `--help`, and official sources:
 
-- [Repositorio y README de Headroom](https://github.com/headroomlabs-ai/headroom).
-- [Quickstart](https://docs.headroomlabs.ai/docs/quickstart), [proxy](https://docs.headroomlabs.ai/docs/proxy) y [savings](https://docs.headroomlabs.ai/docs/savings).
-- [Referencia de configuración de Codex](https://developers.openai.com/codex/config-reference/).
+- [Headroom repository and README](https://github.com/headroomlabs-ai/headroom).
+- [Quickstart](https://docs.headroomlabs.ai/docs/quickstart), [proxy](https://docs.headroomlabs.ai/docs/proxy), and [savings](https://docs.headroomlabs.ai/docs/savings).
+- [Codex configuration reference](https://developers.openai.com/codex/config-reference/).
 
-`main` y la documentación web pueden avanzar antes que esta guía. Para otra versión, revisar los comandos y repetir las verificaciones antes de actualizar el registro.
+`main` and web documentation may move ahead of this guide. For another version, review commands and repeat verification before updating the record.

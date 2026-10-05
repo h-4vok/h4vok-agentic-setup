@@ -1,3 +1,3 @@
-# Paquetes globales
+# Global packages
 
-Pendiente: herramientas npm que queremos disponibles en cada PC, con versiones, requisitos y comandos de instalación y verificación. Todavía no hay paquetes seleccionados.
+Planned: npm tools to make available on every PC, including versions, requirements, and installation and verification commands. No packages have been selected yet.

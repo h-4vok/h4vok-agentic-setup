@@ -1,4 +1,4 @@
-# Artefactos locales y secretos
+# Local artifacts and secrets
 .env
 .env.*
 !.env.example

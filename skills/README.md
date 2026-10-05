@@ -1,3 +1,3 @@
 # Skills
 
-Pendiente: catálogo de skills elegidas, origen, instalación para Codex y Claude, actualización y verificación. Todavía no hay skills para instalar desde este repositorio.
+Planned: a catalog of selected skills, their sources, installation for Codex and Claude, updates, and verification. There are no skills to install from this repository yet.

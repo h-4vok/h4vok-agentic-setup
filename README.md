@@ -1,23 +1,25 @@
 # H4vok agentic setup
 
-Mi setup local opinionado para trabajar en cada PC. Este repositorio es la fuente de instrucciones para instalarlo con Codex, Claude o a mano.
+My opinionated local development setup, reproducible on every PC. This repository provides instructions for installation with Codex, Claude, or by hand.
 
-## Índice
+## Contents
 
-| Categoría | Contenido | Estado |
+| Category | Content | Status |
 | --- | --- | --- |
-| Herramientas para IA | [Headroom: instalación y uso](ai-tools/headroom/README.md) | Primera implementación: Windows |
-| Configuraciones de desarrollo | [EditorConfig, Prettier y VS Code](dev-config/README.md) | Pendiente |
-| Skills | [Skills para los agentes](skills/README.md) | Pendiente |
-| Paquetes globales | [Herramientas npm globales](global-packages/README.md) | Pendiente |
-| Proyectos propios | [sloop, llmchat-cli y diagram-tours](projects/README.md) | Pendiente |
+| AI tools | [Headroom: installation and usage](ai-tools/headroom/README.md) | Initial implementation: Windows |
+| Development configuration | [EditorConfig, Prettier, and VS Code](dev-config/README.md) | Planned |
+| Skills | [Agent skills](skills/README.md) | Planned |
+| Global packages | [Global npm tools](global-packages/README.md) | Planned |
+| Personal projects | [sloop, llmchat-cli, and diagram-tours](projects/README.md) | Planned |
 
-## Cómo usarlo
+## How to use this repository
 
-**Con una IA:** indicarle qué componente instalar y en qué máquina. Por ejemplo: «Leé AGENTS.md e instalá Headroom para Codex y Claude en esta PC siguiendo ai-tools/headroom/README.md. Verificá el resultado y documentá cualquier ajuste».
+**With an AI:** specify the component to install and the target machine. For example: "Read AGENTS.md and install Headroom for Codex and Claude on this PC, following ai-tools/headroom/README.md. Verify the result and document any adjustments."
 
-**A mano:** abrir la guía del componente y seguir los requisitos, instalación, verificación y reversión en ese orden. Los comandos de Windows usan PowerShell.
+**By hand:** open the component guide and follow its requirements, installation, verification, and rollback steps in order. Windows commands use PowerShell.
 
-Cada herramienta tiene su carpeta y sus guías por sistema o cliente cuando hacen falta. Las categorías pendientes reservan espacio; no representan herramientas ya configuradas. Los resultados de una máquina son evidencia, no requisitos universales.
+Each tool has its own directory, with operating system or client guides where needed. Planned categories reserve space; they do not represent configured tools. Results from one machine are evidence, not universal requirements.
 
-[Instrucciones para agentes](AGENTS.md) · [Instrucciones para Claude](CLAUDE.md)
+All repository content and contributions must be in English, even when conversations with the owner are in Spanish.
+
+[Agent instructions](AGENTS.md) · [Claude instructions](CLAUDE.md)

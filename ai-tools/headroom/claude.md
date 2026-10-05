@@ -1,68 +1,68 @@
 # Claude Code
 
-Primero completar [la instalación común](windows.md).
+Complete the [shared installation](windows.md) first.
 
-## Autenticación
+## Authentication
 
 ```powershell
 claude auth status
 ```
 
-Si `loggedIn` es `false`:
+If `loggedIn` is `false`:
 
 ```powershell
 claude auth login
 ```
 
-El usuario completa el login. Headroom no sustituye las credenciales. Si Claude ya está abierto, también ofrece `/login`. No pegar credenciales en este repo.
+The user completes login. Headroom does not replace credentials. An already open Claude session also offers `/login`. Do not paste credentials into this repository.
 
-## Uso diario
+## Daily usage
 
-Desde la carpeta del proyecto:
+From the project directory:
 
 ```powershell
 headroom wrap claude
 ```
 
-El wrapper inicia o reutiliza el proxy, dirige el proceso Claude por `ANTHROPIC_BASE_URL` y registra Serena para ese proyecto con alcance local. No supone que todos los proyectos usan esa integración. En 0.39.1 mantiene `ENABLE_TOOL_SEARCH=true` salvo una preferencia explícita previa, para conservar la carga de herramientas bajo demanda.
+The wrapper starts or reuses the proxy, routes the Claude process through `ANTHROPIC_BASE_URL`, and registers Serena for that project with local scope. It does not assume every project uses that integration. In 0.39.1 it retains `ENABLE_TOOL_SEARCH=true` unless an explicit preference already exists, preserving on-demand tool loading.
 
-Sin Serena:
+Without Serena:
 
 ```powershell
 headroom wrap claude --code-memory none
 ```
 
-Para pasar argumentos a Claude, usar `--`:
+Use `--` to pass arguments to Claude:
 
 ```powershell
 headroom wrap claude -- --resume
 headroom wrap claude -- --model sonnet
 ```
 
-El modelo habitual se conserva al no elegir otro. La opción `--1m` cambia la selección de modelo/contexto: revisar `headroom wrap claude --help` si se necesita; no se activa en la instalación básica.
+The usual model is preserved when another is not selected. The `--1m` option changes model/context selection: review `headroom wrap claude --help` if needed; it is not enabled by the basic installation.
 
-## Pruebas
+## Tests
 
-Arranque local, sin consulta al modelo:
+Local startup without a model request:
 
 ```powershell
 headroom wrap claude -- --version
 ```
 
-Solicitud real mínima, requiere login y consume una consulta:
+A minimal real request requires login and consumes a provider request:
 
 ```powershell
 headroom wrap claude -- -p 'Respond exactly HEADROOM_OK. Do not use tools or modify files.'
 ```
 
-Esperado: `HEADROOM_OK`, código 0 y actividad del proxy. `Not logged in` significa que el cliente arrancó pero no hubo prueba contra Anthropic. Ver [verification.md](verification.md).
+Expected: `HEADROOM_OK`, exit code 0, and proxy activity. `Not logged in` means the client started but no Anthropic request was tested. See [verification.md](verification.md).
 
-## Reversión
+## Rollback
 
-Desde el proyecto afectado:
+From the affected project:
 
 ```powershell
 headroom unwrap claude
 ```
 
-Revisar el MCP global instalado aparte, los registros Serena y `.claude/settings.local.json`: no borrar hooks o servidores ajenos. `unwrap` no elimina las variables persistentes del usuario ni desinstala el paquete.
+Review the separately installed global MCP, Serena entries, and `.claude/settings.local.json`: do not remove unrelated hooks or servers. `unwrap` does not remove persistent user variables or uninstall the package.

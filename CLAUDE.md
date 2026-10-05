@@ -1,3 +1,3 @@
-# Instrucciones para Claude
+# Instructions for Claude
 
-Leé y seguí [AGENTS.md](AGENTS.md), que contiene las instrucciones compartidas de este repositorio. Después abrí la guía del componente solicitado desde [README.md](README.md).
+Read and follow [AGENTS.md](AGENTS.md), which contains the shared instructions for this repository, including the requirement to work in English even when conversations are in Spanish. Then open the requested component guide from [README.md](README.md).

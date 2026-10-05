@@ -1,42 +1,42 @@
-# Problemas y soluciones
+# Troubleshooting
 
-Casos observados con Headroom 0.39.1 en Windows. Para versiones posteriores, contrastar con `--help` y los archivos instalados antes de reutilizar un workaround.
+Cases observed with Headroom 0.39.1 on Windows. For later versions, check `--help` and installed files before reusing a workaround.
 
-## uv/headroom no aparece en esta terminal
+## uv/headroom is missing from this terminal
 
-Una instalación cambia el PATH persistente, pero no el de los procesos existentes. Abrir otra terminal o agregar el directorio de `uv tool dir --bin` al PATH del proceso. En esta PC es `~/.local/bin`; usar el resultado real en cada máquina. Reiniciar también Codex/Claude si estaban abiertos.
+Installation changes persistent PATH, not existing processes. Open another terminal or add the directory from `uv tool dir --bin` to the process PATH. On this PC it is `~/.local/bin`; use the actual result on each machine. Restart Codex/Claude as well if already open.
 
-## La ayuda de MCP dice que sólo admite Claude
+## MCP help says only Claude is supported
 
-El texto de `headroom mcp install --help` en 0.39.1 está atrasado respecto de la implementación: `--agent codex` funciona. Probamos registros explícitos de ambos. Usar `headroom mcp install --agent claude --agent codex`, y comprobar sus resultados.
+The `headroom mcp install --help` text in 0.39.1 lags behind implementation: `--agent codex` works. Explicit registration of both clients was tested. Use `headroom mcp install --agent claude --agent codex` and inspect the results.
 
-`headroom mcp uninstall` de esa versión **no tiene selector de agente** y recorre todos los registrars conocidos. Revisar `--help` y el alcance antes de ejecutarlo si hay otros clientes configurados. Para una eliminación selectiva se pueden usar los comandos nativos de cada cliente, verificando la configuración después.
+That version's `headroom mcp uninstall` has **no agent selector** and visits every known registrar. Review `--help` and scope before running it if other clients are configured. For selective removal, use each client's native commands and verify configuration afterwards.
 
-## MCP existente distinto / marcadores perdidos en Codex
+## Existing MCP mismatch / lost Codex markers
 
-Headroom compara ruta, argumentos y entorno. Incluso `.exe` frente a `.EXE`, o agregar `HEADROOM_BEACON` al env del bloque, puede producir `existing config differs`. No usar `--force` a ciegas: preserva deliberadamente entradas que considera gestionadas por el usuario.
+Headroom compares paths, arguments, and environment. Even `.exe` versus `.EXE`, or adding `HEADROOM_BEACON` to the entry's environment, can produce `existing config differs`. Do not blindly use `--force`: Headroom deliberately preserves entries it considers user-managed.
 
-En esta instalación, una alternativa temporal con `codex mcp add` funcionó, pero `codex mcp remove` reserializó el TOML y perdió comentarios de ownership. Luego `--code-memory none` reportó `Serena MCP: removal failed` aunque Serena seguía registrado.
+During this installation, a temporary `codex mcp add` alternative worked, but `codex mcp remove` reserialized TOML and lost ownership comments. Afterwards, `--code-memory none` reported `Serena MCP: removal failed` while Serena remained registered.
 
-Solución aplicada: se confirmó que **headroom y serena habían sido agregados durante esta instalación**, se quitaron sólo esos dos registros con los comandos nativos y se volvió a ejecutar `headroom wrap codex -- --version`. Así Headroom recreó ambos registros y sus marcadores. No repetirlo si Serena es una integración previa del usuario. Registrar y preservar cualquier personalización antes de migrarla.
+Applied fix: after confirming **headroom and serena were added during this installation**, only those two entries were removed with native commands, then `headroom wrap codex -- --version` was run again. Headroom recreated both entries and their markers. Do not repeat this if Serena is a pre-existing user integration. Record and preserve customizations before migrating them.
 
-La reserialización de la CLI también omitió campos explícitos de otros MCP (`args` vacío y `enabled` con valor predeterminado). Se restauraron únicamente esos campos desde el backup usando `tomlkit`, sin reemplazar el archivo completo. La comparación semántica final confirmó que todos los MCP previos y todas las claves ajenas a MCP conservaban sus valores. Por eso las próximas instalaciones usan directamente el registrar de Headroom.
+CLI reserialization also omitted explicit fields from other MCP entries (empty `args` and default-valued `enabled`). Only those fields were restored from the backup using `tomlkit`, without replacing the entire file. Final semantic comparison confirmed all previous MCP entries and non-MCP keys retained their values. Future installations therefore use Headroom's registrar directly.
 
-Si sólo se desea desactivar un Serena instalado por Headroom y el wrapper no puede retirarlo, revisar `codex mcp get serena` y usar `codex mcp remove serena` exclusivamente después de confirmar su origen. Eso también puede quitar comentarios de otros bloques, por lo que hay que revisar el TOML después.
+To disable a Headroom-installed Serena entry that the wrapper cannot remove, inspect `codex mcp get serena` and use `codex mcp remove serena` only after confirming its origin. This can also remove comments from other blocks, so inspect TOML afterwards.
 
-## Claude devuelve Not logged in
+## Claude returns Not logged in
 
-`claude auth status` puede mostrar `loggedIn: false` aunque otro cliente o una app tenga sesión. Ejecutar `claude auth login` o `/login` en Claude Code, completar el flujo como usuario y repetir la solicitud real. `wrap ... --version` sólo acredita arranque, no autenticación ni tráfico Anthropic.
+`claude auth status` may report `loggedIn: false` even if another client or app is authenticated. Run `claude auth login` or `/login` in Claude Code, complete the flow as the user, and repeat the real request. `wrap ... --version` establishes startup only, not authentication or Anthropic traffic.
 
-## doctor devuelve advertencias
+## doctor reports warnings
 
-Con proxy saludable, código 1 puede incluir ausencia de rutas **globales**, falta de datos, ausencia de presupuesto o Kompress aún diferido. Los wrappers usan configuración de proceso; no hace falta fijar permanentemente `OPENAI_BASE_URL`/`ANTHROPIC_BASE_URL` para ocultar esos avisos. Preservar el routing normal de sesiones no envueltas.
+With a healthy proxy, exit code 1 can indicate missing **global** routing, no data, no budget, or deferred Kompress. Wrappers configure their process; permanently setting `OPENAI_BASE_URL`/`ANTHROPIC_BASE_URL` is unnecessary to hide these warnings. Preserve normal routing for unwrapped sessions.
 
-En la prueba, `/health` devolvió `healthy`, `ready=true`, core Rust cargado; `/debug/warmup` mostró `smart_crusher=loaded`, `code_aware=loaded`, `tree_sitter=loaded` y `kompress.info.source_status=deferred`. No se comprobó el camino ML de Kompress: no declararlo operativo por el solo hecho de instalar `[all]`. Si sigue sin cargar cuando una carga de texto lo requiere, revisar warmup y logs locales y documentar la descarga/error del modelo antes de cambiar flags.
+During testing, `/health` returned `healthy`, `ready=true`, and a loaded Rust core; `/debug/warmup` showed `smart_crusher=loaded`, `code_aware=loaded`, `tree_sitter=loaded`, and `kompress.info.source_status=deferred`. Kompress's ML path was not tested: do not declare it operational merely because `[all]` was installed. If it still fails to load when a text workload needs it, inspect warmup and local logs, and document model downloads/errors before changing flags.
 
-## No existe doctor --network
+## doctor --network does not exist
 
-La versión 0.39.1 sólo admite `--port` y `--json`. No copiar ese flag de una guía externa. Para diagnóstico de conectividad:
+Version 0.39.1 supports only `--port` and `--json`. Do not copy that flag from an external guide. For connectivity diagnostics:
 
 ```powershell
 headroom doctor --json
@@ -44,22 +44,22 @@ Test-NetConnection api.anthropic.com -Port 443
 Test-NetConnection api.openai.com -Port 443
 ```
 
-La prueba de puerto no acredita confianza TLS. Si aparecen errores de certificados en una red corporativa, seguir su configuración de CA autorizada y la documentación del transporte correspondiente; no desactivar la verificación TLS. No fue necesario aplicar un workaround de certificados en esta PC.
+A port check does not establish TLS trust. For certificate errors on a corporate network, follow its authorized CA configuration and the relevant transport documentation; do not disable TLS verification. No certificate workaround was needed on this PC.
 
-## output-savings recomienda beta aunque shaping está activado
+## output-savings recommends beta despite enabled shaping
 
-El mensaje sin datos de 0.39.1 contiene una recomendación antigua de canal beta. La implementación admite `HEADROOM_OUTPUT_SHAPER=1` en stable. Verificar `headroom rollout status` y el valor efectivo en `/health`; no activar otras funciones beta sólo por ese mensaje.
+The no-data message in 0.39.1 contains an outdated beta-channel recommendation. The implementation accepts `HEADROOM_OUTPUT_SHAPER=1` on stable. Check `headroom rollout status` and effective `/health` values; do not enable other beta features just because of that message.
 
-## Desactivar no cambia un proxy compartido
+## Disabling does not change a shared proxy
 
-Quitar una variable no necesariamente borra el override que ya recibió el proxy. Usar `HEADROOM_OUTPUT_SHAPER=0` y volver a ejecutar `wrap`; para holdout usar `HEADROOM_OUTPUT_HOLDOUT=0`. Se comprobó el cambio de shaper 0→1 en el mismo proceso proxy.
+Removing a variable does not necessarily clear an override already received by the proxy. Use `HEADROOM_OUTPUT_SHAPER=0` and run `wrap` again; for holdout use `HEADROOM_OUTPUT_HOLDOUT=0`. A 0-to-1 shaping change was verified in the same proxy process.
 
-## Warning de Magika/ONNX en Windows
+## Magika/ONNX warning on Windows
 
-La prueba MCP informó que usa el detector Python porque el backend nativo Magika/ONNX no es seguro por defecto en Windows. Se conservó ese fallback; la compresión y recuperación pasaron. No activar `HEADROOM_DETECT_BACKEND=rust` sólo para ocultar el warning.
+The MCP test reported use of the Python detector because the native Magika/ONNX backend is unsafe by default on Windows. That fallback was retained; compression and retrieval passed. Do not enable `HEADROOM_DETECT_BACKEND=rust` merely to hide the warning.
 
-## Logs y archivos generados
+## Logs and generated files
 
-Headroom advierte que los modos de archivo Unix no establecen ACL de Windows para los logs. En este setup no se activa logging completo de mensajes. Mantener logs y backups en el perfil local y revisar ACL si se comparte ese directorio. No copiar configuraciones completas, tokens o historiales al repo.
+Headroom warns that Unix file modes do not establish Windows ACLs for logs. This setup does not enable full message logging. Keep logs and backups in the local profile and review ACLs if sharing that directory. Do not copy complete configurations, tokens, or histories into the repository.
 
-`wrap claude` generó `.claude/settings.local.json` con hooks y un lock en este proyecto. Están ignorados en Git; los configura Headroom en cada instalación. Serena y `.headroom/` también son estado local ignorado. No tratar esos archivos generados como plantillas portables.
+`wrap claude` generated `.claude/settings.local.json` with hooks and a lock in this project. Git ignores them; Headroom configures them during each installation. Serena and `.headroom/` are also ignored local state. Do not treat these generated files as portable templates.
