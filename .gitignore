@@ -1,0 +1,16 @@
+# Artefactos locales y secretos
+.env
+.env.*
+!.env.example
+*.log
+*.bak
+.local/
+.venv/
+__pycache__/
+node_modules/
+.serena/
+.mcp.json
+CLAUDE.local.md
+.claude/settings.local.json
+.claude/.headroom_wrap_settings.lock
+.headroom/
